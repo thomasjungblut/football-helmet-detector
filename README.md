@@ -13,6 +13,10 @@ You can also just install it via pip:
 
 If you want to deal with video data, you also need [ffmpeg](https://ffmpeg.org/download.html).
 
+Due to the size of the model it couldn't be included in the repository itself. 
+To download the model, head over to the [release page](https://github.com/thomasjungblut/football-helmet-detector/releases/tag/v1) and download `helmet_detector_model_0093999.pth
+` it into the `output` folder. 
+
 ## Dataset
 
 The data comes from the [NFL Impact Detection](https://www.kaggle.com/c/nfl-impact-detection) challenge that contains endzone and sideline footage of football plays. 
