@@ -6,7 +6,9 @@ This projects contains a retrained [Detectron2](https://github.com/facebookresea
 
 ## Requirements
 
-Effectively you need `pytorch`, `sklearn`, `cv2`, `numpy`, `pandas` and `detectron2`.   
+Clone this repository first.
+
+To install, you need `pytorch`, `sklearn`, `cv2`, `numpy`, `pandas` and `detectron2`.
 You can also just install it via pip:
 
 > pip3 install requirements.txt
@@ -14,8 +16,8 @@ You can also just install it via pip:
 If you want to deal with video data, you also need [ffmpeg](https://ffmpeg.org/download.html).
 
 Due to the size of the model it couldn't be included in the repository itself. 
-To download the model, head over to the [release page](https://github.com/thomasjungblut/football-helmet-detector/releases/tag/v1) and download `helmet_detector_model_0093999.pth
-` it into the `output` folder. 
+
+To download the model, head over to the [release page](https://github.com/thomasjungblut/football-helmet-detector/releases/tag/v1) and download `helmet_detector_model_0093999.pth` into the `output` folder. 
 
 ## Dataset
 
