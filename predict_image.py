@@ -5,7 +5,6 @@ import argparse
 import cv2
 from detectron2.data import MetadataCatalog
 from detectron2.data.detection_utils import read_image
-from detectron2.structures import Instances
 from detectron2.utils.visualizer import Visualizer
 
 from model import get_predictor
@@ -21,16 +20,11 @@ image = read_image(args.input, "BGR")
 model_output = predictor(image)
 
 model_output = model_output["instances"].to("cpu")
-filter_mask = model_output.scores > 0.8
-ni = Instances(model_output.image_size, **{
-    "scores": model_output.scores[filter_mask],
-    "pred_boxes": model_output.pred_boxes[filter_mask],
-    "pred_classes": model_output.pred_classes[filter_mask]
-})
+confident_predictions = model_output[model_output.scores > 0.8]
 
 img = cv2.imread(args.input)
 v = Visualizer(img[:, :, ::-1], metadata=MetadataCatalog.get("nflimpact"))
-img = v.draw_instance_predictions(ni).get_image()
+img = v.draw_instance_predictions(confident_predictions).get_image()
 
 success = cv2.imwrite(args.output, img)
 if not success:

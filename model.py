@@ -13,12 +13,13 @@ def new_model_cfg():
     cfg.INPUT.RANDOM_FLIP = "none"
     cfg.OUTPUT_DIR = "output"
 
-    cfg.DATALOADER.NUM_WORKERS = 2
+    cfg.DATALOADER.NUM_WORKERS = 4
     cfg.SOLVER.IMS_PER_BATCH = 4
     cfg.SOLVER.CHECKPOINT_PERIOD = 2000
-    cfg.SOLVER.STEPS = (21000, 50000)
-    cfg.SOLVER.MAX_ITER = 200000
+    cfg.SOLVER.STEPS = (10000, 21000, 35000, 55000, 75000)
+    cfg.SOLVER.MAX_ITER = 150000
     cfg.SOLVER.BASE_LR = 0.001
+    cfg.SOLVER.WEIGHT_DECAY = 0.001
     cfg.TEST.EVAL_PERIOD = 2000
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
     cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = True
@@ -29,7 +30,7 @@ def get_predictor():
     classes = ['helmet']
     MetadataCatalog.get("nflimpact").set(thing_classes=classes)
     cfg = new_model_cfg()
-    cfg.MODEL.WEIGHTS = "model/helmet_detector_model_0093999.pth"
+    cfg.MODEL.WEIGHTS = "model/model_v2_0071999.pth"
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(classes)
     cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
     return DefaultPredictor(cfg)

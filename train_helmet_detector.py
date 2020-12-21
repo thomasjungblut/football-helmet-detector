@@ -2,6 +2,7 @@
 import os
 import pickle
 
+import numpy as np
 import pandas as pd
 import torch
 from detectron2.data import MetadataCatalog, DatasetCatalog, build_detection_train_loader, build_detection_test_loader, \
@@ -16,11 +17,11 @@ from model import new_model_cfg
 print(torch.__version__, torch.cuda.is_available())
 
 
-def convert_video_labels(video_labels: pd.DataFrame):
+def convert_video_labels(all_videos, video_labels: pd.DataFrame, train_videos):
     dataset_dicts = []
-    all_videos = video_labels['video'].unique()
     videos_processed = 0
     for video in all_videos:
+        is_train = True if video in train_videos else False
         frames = video_labels.query("video == @video")
         min_frame = frames['frame'].min()
         max_frame = frames['frame'].max()
@@ -30,22 +31,30 @@ def convert_video_labels(video_labels: pd.DataFrame):
             img_path = os.path.join("data", "nfl_impact_images_train", video, str.format("{}", i).zfill(6) + '.png')
             if not os.path.exists(img_path):
                 continue
-            record = {"image_id": img_path, "file_name": img_path, "height": 720, "width": 1280}
+            record = {"image_id": img_path,
+                      "video_name": video,
+                      "file_name": img_path,
+                      "frame": i,
+                      "height": 720,
+                      "width": 1280}
             objects = []
             if not player_frames.empty:
-                for _, impact in player_frames.iterrows():
+                for _, row in player_frames.iterrows():
                     obj = {
-                        "bbox": [impact['left'],
-                                 impact['top'],
-                                 impact['left'] + impact['width'],
-                                 impact['top'] + impact['height']],
+                        "bbox": [row['left'],
+                                 row['top'],
+                                 row['left'] + row['width'],
+                                 row['top'] + row['height']],
                         "bbox_mode": BoxMode.XYXY_ABS,
                         "category_id": 0,
                     }
                     objects.append(obj)
 
             record["annotations"] = objects
-            if objects:
+            if is_train:
+                if objects:
+                    dataset_dicts.append(record)
+            else:
                 dataset_dicts.append(record)
 
         print("conversion progress %d/%d" % (videos_processed, len(all_videos)))
@@ -75,9 +84,21 @@ if __name__ == '__main__':
     pickle_path = 'output/dataset_dict.pkl'
     if not os.path.exists(pickle_path):
         video_labels = pd.read_csv('data/train_labels.csv')
-        dataset_dicts = convert_video_labels(video_labels)
-        # randomly split the dict in 95/05
-        train, test = train_test_split(dataset_dicts, test_size=0.05)
+        video_labels = video_labels.replace({np.nan: None})
+        all_videos = video_labels['video'].unique().tolist()
+        train_vids, test_vids = train_test_split(all_videos, test_size=0.05)
+        dataset_dicts = convert_video_labels(all_videos, video_labels, train_vids)
+
+        train = []
+        test = []
+
+        for r in dataset_dicts:
+            if r['video_name'] in train_vids:
+                train.append(r)
+            else:
+                test.append(r)
+
+        print("train: {} test: {}".format(len(train), len(test)))
         with open(pickle_path, 'wb') as f:
             pickle.dump((train, test), f, pickle.HIGHEST_PROTOCOL)
     else:

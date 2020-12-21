@@ -16,8 +16,7 @@ You can also just install it via pip:
 If you want to deal with video data, you also need [ffmpeg](https://ffmpeg.org/download.html).
 
 Due to the size of the model it couldn't be included in the repository itself. 
-
-To download the model, head over to the [release page](https://github.com/thomasjungblut/football-helmet-detector/releases/tag/v1) and download `helmet_detector_model_0093999.pth` into the `output` folder. 
+To download the model, head over to the [release page](https://github.com/thomasjungblut/football-helmet-detector/releases/tag/v2) and download `model_v2_0071999.pth` into the `output` folder. 
 
 ## Dataset
 
@@ -34,9 +33,13 @@ To generate the frames in the right place and format, you can run `python3 prepr
 ## Model Performance
 
 The model was evaluated using the standard COCO evaluation metrics. 
-It was trained for 94k iterations (batch size 4) on 95% of the frames of the Kaggle dataset and 5% for the test set. 
+It was trained for 72k iterations (batch size 4) on 95% of the frames of the Kaggle dataset and 5% for the test set. 
 
-Its AP@50 was at around 97% after 14h of training on a RTX2080 TI.
+Its AP@50 was at around 91% after 14h of training on a RTX2080 TI.
+
+|   AP   |  AP50  |  AP75  |  APs   |  APm   |  APl  |
+|:------:|:------:|:------:|:------:|:------:|:-----:|
+| 58.01  | 90.96  | 67.98  | 55.64  | 71.66  |  nan  |
 
 ## Model Inference
 
