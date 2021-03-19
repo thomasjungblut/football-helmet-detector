@@ -56,7 +56,7 @@ opt-einsum==3.2.0
 packaging==20.7
 pandas==1.1.4
 panopticapi @ https://github.com/cocodataset/panopticapi/archive/master.zip
-Pillow==8.0.1
+Pillow==8.1.1
 pluggy==0.13.1
 portalocker==2.0.0
 promise==2.3
